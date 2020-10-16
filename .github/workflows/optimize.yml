@@ -1,0 +1,23 @@
+name: Image Optimizer
+on:
+  push
+jobs:
+  build:
+    name: Optimizer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+      - name: Compress Images
+        id: calibre
+        uses: calibreapp/image-actions@master
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          compressOnly: true
+      - name: Create New Pull Request If Needed
+        uses: peter-evans/create-pull-request@master
+        with:
+          title: Compressed Images
+          branch-suffix: timestamp
+          commit-message: Compressed Images
+          body: ${{ steps.calibre.outputs.markdown }}
